@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KIM'S CLUB</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #0d0d0d; --white: #fff;
+    --g50: #f7f7f7; --g100: #efefef; --g200: #e0e0e0; --g400: #aaa; --g600: #666;
+    --radius: 14px;
+  }
+  body { font-family:'Noto Sans KR','Pretendard',sans-serif; background:var(--white); color:var(--black); min-height:100vh; -webkit-font-smoothing:antialiased; }
+
+  nav { position:fixed;top:0;left:0;right:0;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--g200);z-index:100; }
+  .nav-logo img { height:20px;display:block; }
+  .nav-admin-btn { padding:7px 16px;border-radius:999px;border:1.5px solid var(--black);background:transparent;color:var(--black);font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:400;cursor:pointer;letter-spacing:-.2px;transition:background .15s,color .15s; }
+  .nav-admin-btn:hover { background:var(--black);color:var(--white); }
+
+  .hero { padding-top:148px;padding-bottom:56px;text-align:center; }
+  .hero-title { font-family:'DM Sans','Noto Sans KR',sans-serif;font-size:clamp(34px,5.5vw,60px);font-weight:300;line-height:1.15;letter-spacing:-.5px;margin-bottom:14px;opacity:0;transform:translateY(18px);animation:fadeUp .55s ease forwards .08s; }
+  .hero-sub { font-size:14px;color:var(--g400);font-weight:300;letter-spacing:.2px;opacity:0;animation:fadeUp .55s ease forwards .2s; }
+
+  .grid-wrap { max-width:660px;margin:48px auto 0;padding:0 24px 100px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;opacity:0;animation:fadeUp .55s ease forwards .32s; }
+  .card { position:relative;background:var(--g50);border-radius:var(--radius);aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;border:1.5px solid transparent;transition:background .16s,border-color .16s,transform .18s,box-shadow .18s;gap:8px; }
+  .card:hover { background:var(--g100);border-color:var(--g200);transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.06); }
+  .card.featured { background:var(--black);color:var(--white);border-color:var(--black); }
+  .card.featured:hover { background:#1a1a1a;box-shadow:0 10px 28px rgba(0,0,0,.18); }
+  .card-label { font-size:18px;font-weight:700;letter-spacing:-.5px; }
+  .card-desc { font-size:11px;color:var(--g400);font-weight:300;letter-spacing:-.1px; }
+  .card.featured .card-desc { color:rgba(255,255,255,.4); }
+  .card-badge { position:absolute;top:11px;right:11px;background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-size:9px;font-weight:700;padding:2px 7px;border-radius:999px;letter-spacing:.4px; }
+
+  /* 서브메뉴 */
+  .sub-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(6px);z-index:200;align-items:center;justify-content:center; }
+  .sub-overlay.open { display:flex;animation:fadeIn .18s ease; }
+  .sub-box { background:var(--white);border-radius:20px;padding:28px;width:min(440px,92vw);box-shadow:0 24px 64px rgba(0,0,0,.15);max-height:80vh;overflow-y:auto; }
+  .sub-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:20px; }
+  .sub-title { font-size:18px;font-weight:700;letter-spacing:-.5px; }
+  .sub-close { width:30px;height:30px;border-radius:50%;border:none;background:var(--g100);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--g600);transition:background .12s; }
+  .sub-close:hover { background:var(--g200); }
+  .sub-list { display:flex;flex-direction:column;gap:8px; }
+  .sub-item { display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-radius:11px;background:var(--g50);border:1.5px solid transparent;cursor:pointer;transition:background .13s,border-color .13s,transform .13s; }
+  .sub-item:hover { background:var(--g100);border-color:var(--g200);transform:translateX(3px); }
+  .si-left { display:flex;flex-direction:column;gap:3px; }
+  .si-name { font-size:14px;font-weight:700;letter-spacing:-.3px; }
+  .si-desc { font-size:11px;color:var(--g400); }
+  .si-arrow { font-size:13px;color:var(--g400); }
+  .sub-divider { height:1px;background:var(--g200);margin:4px 0; }
+
+  /* 관리자 모달 */
+  .adm-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);backdrop-filter:blur(8px);z-index:500;align-items:center;justify-content:center; }
+  .adm-overlay.open { display:flex;animation:fadeIn .18s ease; }
+  .adm-box { background:var(--white);border-radius:20px;padding:32px;width:min(520px,94vw);box-shadow:0 8px 40px rgba(0,0,0,.12);max-height:88vh;overflow-y:auto; }
+  .adm-head { display:flex;align-items:center;justify-content:space-between;margin-bottom:20px; }
+  .adm-title { font-size:17px;font-weight:700;letter-spacing:-.4px; }
+  .adm-close { width:30px;height:30px;border-radius:50%;border:none;background:var(--g100);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--g600); }
+  .adm-close:hover { background:var(--g200); }
+
+  .adm-section { margin-bottom:20px; }
+  .adm-section-title { font-size:10px;font-weight:600;color:var(--g400);letter-spacing:.6px;text-transform:uppercase;margin-bottom:10px; }
+  .adm-item-row { display:flex;align-items:center;gap:8px;margin-bottom:8px;background:var(--g50);border-radius:10px;padding:10px 12px; }
+  .adm-item-col { display:flex;flex-direction:column;gap:5px;flex:1; }
+  .adm-inp { padding:7px 10px;border-radius:7px;border:1.5px solid var(--g200);background:var(--white);font-size:12px;font-family:inherit;outline:none;width:100%; }
+  .adm-inp:focus { border-color:#0d0d0d; }
+  .adm-inp-name { font-weight:600; }
+  .adm-del-btn { width:26px;height:26px;border-radius:50%;border:none;background:var(--g100);color:var(--g600);font-size:14px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center; }
+  .adm-del-btn:hover { background:#fee2e2;color:#dc2626; }
+  .adm-add-btn { width:100%;padding:9px;border-radius:9px;border:1.5px dashed var(--g200);background:transparent;color:var(--g400);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:border-color .13s,color .13s; }
+  .adm-add-btn:hover { border-color:var(--black);color:var(--black); }
+
+  .adm-actions { display:flex;gap:8px;margin-top:20px; }
+  .adm-btn { flex:1;padding:12px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .13s; }
+  .adm-btn-cancel { border:1.5px solid var(--g200);background:var(--white);color:var(--black); }
+  .adm-btn-save { border:none;background:var(--black);color:var(--white); }
+
+  /* 로그인 */
+  .pw-inp { width:100%;padding:12px 16px;border-radius:10px;border:1.5px solid var(--g200);background:var(--g50);font-size:14px;font-family:inherit;outline:none;letter-spacing:2px;margin-bottom:10px; }
+  .pw-err { color:#e53935;font-size:12px;min-height:18px;margin-bottom:10px; }
+
+  /* 토스트 */
+  .toast { position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--black);color:var(--white);padding:10px 20px;border-radius:999px;font-size:12px;font-weight:500;opacity:0;pointer-events:none;transition:all .22s;z-index:999;white-space:nowrap; }
+  .toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
+
+  @keyframes fadeUp { to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo"><img id="logoImg" alt="KIM'S CLUB"></div>
+  <button class="nav-admin-btn" onclick="openAdminModal()">관리자 모드</button>
+</nav>
+
+<div class="hero">
+  <h1 class="hero-title">Kim's Club<br>Hub</h1>
+  <p class="hero-sub">킴스클럽 통합 업무 포털입니다.</p>
+</div>
+
+<div class="grid-wrap" id="mainGrid">
+  <!-- JS로 렌더링 -->
+</div>
+
+<!-- 서브메뉴 오버레이 -->
+<div class="sub-overlay" id="subOverlay" onclick="closeSub(event)">
+  <div class="sub-box">
+    <div class="sub-header">
+      <div class="sub-title" id="subTitle"></div>
+      <button class="sub-close" onclick="closeSubBtn()">✕</button>
+    </div>
+    <div class="sub-list" id="subList"></div>
+  </div>
+</div>
+
+<!-- 관리자 모달 -->
+<div class="adm-overlay" id="admOverlay" onclick="closeAdmOutside(event)">
+  <div class="adm-box">
+
+    <!-- 로그인 -->
+    <div id="admLogin">
+      <div class="adm-head">
+        <div class="adm-title">관리자 모드</div>
+        <button class="adm-close" onclick="closeAdminModal()">✕</button>
+      </div>
+      <div style="font-size:13px;color:var(--g400);font-weight:300;margin-bottom:20px;">비밀번호를 입력하세요</div>
+      <input id="admPwInp" class="pw-inp" type="password" placeholder="비밀번호" onkeydown="if(event.key==='Enter')tryAdminLogin()"/>
+      <div id="admPwErr" class="pw-err"></div>
+      <div style="display:flex;gap:8px;">
+        <button class="adm-btn adm-btn-cancel" onclick="closeAdminModal()">취소</button>
+        <button class="adm-btn adm-btn-save" onclick="tryAdminLogin()">로그인</button>
+      </div>
+    </div>
+
+    <!-- 편집기 -->
+    <div id="admEditor" style="display:none;">
+      <div class="adm-head">
+        <div class="adm-title">메뉴 관리</div>
+        <button class="adm-close" onclick="closeAdminModal()">✕</button>
+      </div>
+      <div id="admSections"></div>
+      <div class="adm-actions">
+        <button class="adm-btn adm-btn-cancel" onclick="closeAdminModal()">닫기</button>
+        <button class="adm-btn adm-btn-save" onclick="saveAll()">저장</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const ADMIN_PW = 'vmd12!';
+const LOGO_B64 = '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';
+
+// 기본 데이터
+const DEFAULT_DATA = {
+  menus: [
+    {
+      id: 'product', label: '상품', desc: '상품 관리', featured: false,
+      items: []
+    },
+    {
+      id: 'sales', label: '영업', desc: '표준화 · 도면', featured: true,
+      items: [
+        { id: 's1', name: '52주 AI 표준화', desc: '도면 · 평당매출 · 운영맵', url: 'index_header_v2_v5_fixed.html' },
+        { id: 's2', name: '매출 분석', desc: '지점별 매출 현황 및 리포트', url: '' },
+        { id: 's3', name: '발주 관리', desc: '주간 발주 계획 및 현황', url: '' },
+      ]
+    },
+    {
+      id: 'marketing', label: '알리기', desc: '광고 · 홍보', featured: false,
+      items: []
+    },
+  ]
+};
+
+function loadData() {
+  try {
+    const s = localStorage.getItem('kc_data');
+    return s ? JSON.parse(s) : DEFAULT_DATA;
+  } catch(e) { return DEFAULT_DATA; }
+}
+function saveData(data) {
+  localStorage.setItem('kc_data', JSON.stringify(data));
+}
+
+// ── 메인 그리드 렌더 ──
+function renderGrid() {
+  const data = loadData();
+  const grid = document.getElementById('mainGrid');
+  grid.innerHTML = data.menus.map(m => `
+    <div class="card${m.featured?' featured':''}" onclick="handleCardClick('${m.id}')">
+      ${m.featured ? '<div class="card-badge">LIVE</div>' : ''}
+      <div class="card-label">${m.label}</div>
+      <div class="card-desc">${m.desc}</div>
+    </div>
+  `).join('');
+}
+
+function handleCardClick(id) {
+  const data = loadData();
+  const menu = data.menus.find(m => m.id === id);
+  if (!menu) return;
+  if (menu.items && menu.items.length > 0) {
+    openSub(menu);
+  } else if (menu.url) {
+    window.open(menu.url, '_blank');
+  } else {
+    showToast('준비 중입니다');
+  }
+}
+
+// ── 서브메뉴 ──
+function openSub(menu) {
+  document.getElementById('subTitle').textContent = menu.label;
+  document.getElementById('subList').innerHTML = menu.items.map(item => `
+    <div class="sub-item" onclick="goUrl('${item.url}')">
+      <div class="si-left">
+        <div class="si-name">${item.name}</div>
+        <div class="si-desc">${item.desc}</div>
+      </div>
+      <div class="si-arrow">→</div>
+    </div>
+  `).join('<div class="sub-divider"></div>');
+  document.getElementById('subOverlay').classList.add('open');
+}
+function closeSubBtn() { document.getElementById('subOverlay').classList.remove('open'); }
+function closeSub(e) { if(e.target===document.getElementById('subOverlay')) closeSubBtn(); }
+function goUrl(url) {
+  if (url) window.open(url, '_blank');
+  else showToast('준비 중입니다');
+}
+
+// ── 관리자 모달 ──
+function openAdminModal() {
+  document.getElementById('admOverlay').classList.add('open');
+  document.getElementById('admLogin').style.display = 'block';
+  document.getElementById('admEditor').style.display = 'none';
+  document.getElementById('admPwInp').value = '';
+  document.getElementById('admPwErr').textContent = '';
+  setTimeout(() => document.getElementById('admPwInp').focus(), 100);
+}
+function closeAdminModal() { document.getElementById('admOverlay').classList.remove('open'); }
+function closeAdmOutside(e) { if(e.target===document.getElementById('admOverlay')) closeAdminModal(); }
+
+function tryAdminLogin() {
+  if (document.getElementById('admPwInp').value === ADMIN_PW) {
+    document.getElementById('admLogin').style.display = 'none';
+    document.getElementById('admEditor').style.display = 'block';
+    renderAdminEditor();
+  } else {
+    document.getElementById('admPwErr').textContent = '비밀번호가 올바르지 않습니다';
+    document.getElementById('admPwInp').value = '';
+    document.getElementById('admPwInp').focus();
+  }
+}
+
+// ── 관리자 편집기 렌더 ──
+function renderAdminEditor() {
+  const data = loadData();
+  const wrap = document.getElementById('admSections');
+  wrap.innerHTML = data.menus.map((menu, mi) => `
+    <div class="adm-section">
+      <div class="adm-section-title">${menu.label} 메뉴</div>
+
+      <!-- 카드 기본 정보 -->
+      <div class="adm-item-row" style="margin-bottom:12px;">
+        <div class="adm-item-col">
+          <input class="adm-inp adm-inp-name" placeholder="카드 이름" value="${menu.label}"
+            onchange="updateMenuField(${mi},'label',this.value)"/>
+          <input class="adm-inp" placeholder="카드 설명" value="${menu.desc}"
+            onchange="updateMenuField(${mi},'desc',this.value)"/>
+          ${menu.items.length===0 ? `<input class="adm-inp" placeholder="바로가기 URL (항목 없을 때)" value="${menu.url||''}"
+            onchange="updateMenuField(${mi},'url',this.value)"/>` : ''}
+        </div>
+      </div>
+
+      <!-- 세부 항목들 -->
+      ${menu.items.map((item, ii) => `
+        <div class="adm-item-row" id="item_${mi}_${ii}">
+          <div class="adm-item-col">
+            <input class="adm-inp adm-inp-name" placeholder="항목 이름" value="${item.name}"
+              onchange="updateItemField(${mi},${ii},'name',this.value)"/>
+            <input class="adm-inp" placeholder="설명" value="${item.desc}"
+              onchange="updateItemField(${mi},${ii},'desc',this.value)"/>
+            <input class="adm-inp" placeholder="URL" value="${item.url}"
+              onchange="updateItemField(${mi},${ii},'url',this.value)"/>
+          </div>
+          <button class="adm-del-btn" onclick="deleteItem(${mi},${ii})">✕</button>
+        </div>
+      `).join('')}
+
+      <button class="adm-add-btn" onclick="addItem(${mi})">+ 항목 추가</button>
+    </div>
+    ${mi < data.menus.length-1 ? '<div class="sub-divider" style="margin:4px 0 20px;"></div>' : ''}
+  `).join('');
+}
+
+// 임시 편집 데이터 (저장 전)
+let _editData = null;
+function getEditData() {
+  if (!_editData) _editData = JSON.parse(JSON.stringify(loadData()));
+  return _editData;
+}
+
+function updateMenuField(mi, field, val) {
+  getEditData().menus[mi][field] = val;
+}
+function updateItemField(mi, ii, field, val) {
+  getEditData().menus[mi].items[ii][field] = val;
+}
+function deleteItem(mi, ii) {
+  getEditData().menus[mi].items.splice(ii, 1);
+  renderAdminEditor();
+}
+function addItem(mi) {
+  const d = getEditData();
+  d.menus[mi].items.push({ id: 'i'+Date.now(), name: '', desc: '', url: '' });
+  renderAdminEditor();
+}
+function saveAll() {
+  if (_editData) {
+    saveData(_editData);
+    _editData = null;
+  }
+  renderGrid();
+  closeAdminModal();
+  showToast('저장되었습니다');
+}
+
+// ── 토스트 ──
+let _tt;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_tt);
+  _tt = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ── 초기화 ──
+document.getElementById('logoImg').src = 'data:image/png;base64,' + LOGO_B64;
+renderGrid();
+</script>
+</body>
+</html>
