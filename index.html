@@ -128,7 +128,10 @@
 <div class="sub-overlay" id="subOverlay" onclick="closeSub(event)">
   <div class="sub-box">
     <div class="sub-header">
-      <div class="sub-title" id="subTitle"></div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button id="subBack" onclick="" style="display:none;width:28px;height:28px;border-radius:50%;border:1px solid var(--g200);background:transparent;font-size:14px;cursor:pointer;display:none;align-items:center;justify-content:center;color:var(--g600);">←</button>
+        <div class="sub-title" id="subTitle"></div>
+      </div>
       <button class="sub-close" onclick="closeSubBtn()">✕</button>
     </div>
     <div class="sub-list" id="subList"></div>
@@ -225,7 +228,9 @@ function handleCardClick(id) {
   const data = loadData();
   const menu = data.menus.find(m => m.id === id);
   if (!menu) return;
-  if (menu.items && menu.items.length > 0) {
+  const hasGroups = menu.groups && menu.groups.length > 0;
+  const hasItems = menu.items && menu.items.length > 0;
+  if (hasGroups || hasItems) {
     openSub(menu);
   } else if (menu.url) {
     window.open(menu.url, '_blank');
@@ -235,18 +240,62 @@ function handleCardClick(id) {
 }
 
 // ── 서브메뉴 ──
+let _currentMenu = null;
+
 function openSub(menu) {
+  _currentMenu = menu;
+  document.getElementById('subOverlay').classList.add('open');
+  if (menu.groups && menu.groups.length > 0) {
+    showGroupList(menu);
+  } else {
+    showItemList(menu.label, menu.items || [], null);
+  }
+}
+
+function showGroupList(menu) {
   document.getElementById('subTitle').textContent = menu.label;
-  document.getElementById('subList').innerHTML = menu.items.map(item => `
-    <div class="sub-item" onclick="goUrl('${item.url}')">
+  document.getElementById('subBack').style.display = 'none';
+  let html = menu.groups.map((g, gi) => `
+    <div class="sub-item" onclick="openGroup(${gi})">
       <div class="si-left">
-        <div class="si-name">${item.name}</div>
-        <div class="si-desc">${item.desc}</div>
+        <div class="si-name">${g.name}</div>
+        <div class="si-desc">${g.items && g.items.length > 0 ? g.items.length + '개 항목' : '준비 중'}</div>
       </div>
       <div class="si-arrow">→</div>
     </div>
   `).join('<div class="sub-divider"></div>');
-  document.getElementById('subOverlay').classList.add('open');
+  document.getElementById('subList').innerHTML = html;
+}
+
+function openGroup(gi) {
+  const grp = _currentMenu.groups[gi];
+  showItemList(grp.name, grp.items || [], () => showGroupList(_currentMenu));
+}
+
+function showItemList(title, items, backFn) {
+  document.getElementById('subTitle').textContent = title;
+  const backBtn = document.getElementById('subBack');
+  if (backFn) {
+    backBtn.style.display = 'flex';
+    backBtn.onclick = backFn;
+  } else {
+    backBtn.style.display = 'none';
+  }
+  let html = '';
+  if (items.length > 0) {
+    html = items.map((item, i) => `
+      <div class="sub-item" onclick="goUrl('${item.url}')">
+        <div class="si-left">
+          <div class="si-name">${item.name}</div>
+          <div class="si-desc">${item.desc}</div>
+        </div>
+        <div class="si-arrow">→</div>
+      </div>
+    `).join('<div class="sub-divider"></div>');
+  } else {
+    html = '<div style="padding:16px 4px;font-size:13px;color:var(--g400);text-align:center;">준비 중입니다</div>';
+  }
+  document.getElementById('subList').innerHTML = html;
 }
 function closeSubBtn() { document.getElementById('subOverlay').classList.remove('open'); }
 function closeSub(e) { if(e.target===document.getElementById('subOverlay')) closeSubBtn(); }
@@ -286,6 +335,8 @@ function renderAdminEditor() {
   wrap.innerHTML = d.menus.map((menu, mi) => `
     <div class="adm-section">
       <div class="adm-section-title">${menu.label} 카드</div>
+
+      <!-- 카드 기본정보 -->
       <div class="adm-item-row" style="margin-bottom:14px;">
         <div class="adm-item-col">
           <input class="adm-inp adm-inp-name" placeholder="카드 이름" value="${menu.label}"
@@ -295,6 +346,26 @@ function renderAdminEditor() {
         </div>
       </div>
 
+      <!-- 그룹 없는 직접 링크 -->
+      ${(menu.groups||[]).length === 0 ? `
+        <div style="font-size:10px;color:var(--g400);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;">링크 목록</div>
+        ${(menu.items||[]).map((item, ii) => `
+          <div class="adm-item-row">
+            <div class="adm-item-col">
+              <input class="adm-inp adm-inp-name" placeholder="이름" value="${item.name}"
+                oninput="_editData.menus[${mi}].items[${ii}].name=this.value"/>
+              <input class="adm-inp" placeholder="설명" value="${item.desc}"
+                oninput="_editData.menus[${mi}].items[${ii}].desc=this.value"/>
+              <input class="adm-inp" placeholder="URL" value="${item.url}"
+                oninput="_editData.menus[${mi}].items[${ii}].url=this.value"/>
+            </div>
+            <button class="adm-del-btn" onmousedown="event.preventDefault();event.stopPropagation();deleteItem(${mi},${ii})">✕</button>
+          </div>
+        `).join('')}
+        <button class="adm-add-btn" onmousedown="event.preventDefault();event.stopPropagation();addItem(${mi})">+ 링크 추가</button>
+      ` : ''}
+
+      <!-- 그룹 -->
       ${(menu.groups||[]).map((grp, gi) => `
         <div style="border:1px solid var(--g200);border-radius:10px;padding:12px;margin-bottom:10px;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
@@ -303,7 +374,6 @@ function renderAdminEditor() {
             <button class="adm-del-btn" style="background:#fef2f2;color:#dc2626;border-color:#fecaca;"
               onmousedown="event.preventDefault();event.stopPropagation();deleteGroup(${mi},${gi})">✕</button>
           </div>
-
           ${(grp.items||[]).map((item, ii) => `
             <div class="adm-item-row" style="background:var(--white);">
               <div class="adm-item-col">
@@ -317,12 +387,17 @@ function renderAdminEditor() {
               <button class="adm-del-btn" onmousedown="event.preventDefault();event.stopPropagation();deleteGroupItem(${mi},${gi},${ii})">✕</button>
             </div>
           `).join('')}
-
           <button class="adm-add-btn" onmousedown="event.preventDefault();event.stopPropagation();addGroupItem(${mi},${gi})">+ 링크 추가</button>
         </div>
       `).join('')}
 
-      <button class="adm-add-btn" style="margin-top:4px;" onmousedown="event.preventDefault();event.stopPropagation();addGroup(${mi})">+ 그룹 추가</button>
+      <div style="display:flex;gap:8px;margin-top:4px;">
+        ${(menu.groups||[]).length === 0 ? `
+          <button class="adm-add-btn" onmousedown="event.preventDefault();event.stopPropagation();convertToGroup(${mi})">+ 그룹으로 전환</button>
+        ` : `
+          <button class="adm-add-btn" onmousedown="event.preventDefault();event.stopPropagation();addGroup(${mi})">+ 그룹 추가</button>
+        `}
+      </div>
     </div>
     ${mi < d.menus.length-1 ? '<div class="sub-divider" style="margin:4px 0 20px;"></div>' : ''}
   `).join('');
@@ -351,6 +426,23 @@ let _editData = null;
     renderAdminEditor();
   }
 
+function deleteItem(mi, ii) {
+    getEditData().menus[mi].items.splice(ii, 1);
+    renderAdminEditor();
+  }
+  function addItem(mi) {
+    const d = getEditData();
+    if (!d.menus[mi].items) d.menus[mi].items = [];
+    d.menus[mi].items.push({ id: 'i'+Date.now(), name: '', desc: '', url: '' });
+    renderAdminEditor();
+  }
+  function convertToGroup(mi) {
+    const d = getEditData();
+    const existing = d.menus[mi].items || [];
+    d.menus[mi].groups = [{ id: 'g'+Date.now(), name: '새 그룹', items: existing }];
+    d.menus[mi].items = [];
+    renderAdminEditor();
+  }
 function getEditData() {
   if (!_editData) _editData = JSON.parse(JSON.stringify(loadData()));
   return _editData;
