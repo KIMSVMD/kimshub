@@ -510,35 +510,28 @@ function deleteItem(mi, ii) {
     d.menus[mi].items = [];
     renderAdminEditor();
   }
+  async function saveAll() {
+    if (_editData) {
+      saveData(_editData);
+      if (typeof window._fbSaveData === 'function') {
+        const ok = await window._fbSaveData(_editData);
+        showToast(ok ? '저장되었습니다 ☁' : '로컬 저장됨 (서버 연결 실패)');
+      } else {
+        showToast('저장되었습니다');
+      }
+      _editData = null;
+    }
+    renderGrid();
+    closeAdminModal();
+  }
+
 function getEditData() {
   if (!_editData) _editData = JSON.parse(JSON.stringify(loadData()));
   return _editData;
 }
 
-function updateMenuField(mi, field, val) {
-  getEditData().menus[mi][field] = val;
-}
-function updateItemField(mi, ii, field, val) {
-  getEditData().menus[mi].items[ii][field] = val;
-}
-function deleteItem(mi, ii) {
-  getEditData().menus[mi].items.splice(ii, 1);
-  renderAdminEditor();
-}
-function addItem(mi) {
-  const d = getEditData();
-  d.menus[mi].items.push({ id: 'i'+Date.now(), name: '', desc: '', url: '' });
-  renderAdminEditor();
-}
-function saveAll() {
-  if (_editData) {
-    saveData(_editData);
-    _editData = null;
-  }
-  renderGrid();
-  closeAdminModal();
-  showToast('저장되었습니다');
-}
+
+
 
 // ── 토스트 ──
 let _tt;
