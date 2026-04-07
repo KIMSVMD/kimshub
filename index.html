@@ -3,575 +3,397 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>킴스클럽 간편식 성과 관리 대시보드</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>KIM'S CLUB</title>
+
+<!-- OG 메타태그 -->
+<meta property="og:title" content="KIM'S CLUB Hub">
+<meta property="og:description" content="킴스클럽 통합 업무 포털입니다.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="og-image.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="og-image.png">
+
+<!-- 파비콘 -->
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #f5f4f0;
-  --surface: #ffffff;
-  --surface2: #f0efe9;
-  --border: rgba(0,0,0,0.08);
-  --border2: rgba(0,0,0,0.14);
-  --text: #1a1917;
-  --text2: #6b6a65;
-  --text3: #9b9a94;
-  --red: #c0392b; --red-bg: #fdf0ef; --red-border: #f5c6c2;
-  --amber: #a0610a; --amber-bg: #fef6e7; --amber-border: #f9d89a;
-  --green: #2d6a1f; --green-bg: #eef6e8; --green-border: #b8dda0;
-  --blue: #1a4f8a; --blue-bg: #eaf2fb; --blue-border: #a8cdf0;
-  --radius: 10px; --radius-sm: 6px;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'Noto Sans KR', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  font-size: 14px;
-  line-height: 1.6;
-}
-.page {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 32px 24px 60px;
-}
-.header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 28px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border2);
-}
-.header-left h1 {
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
-}
-.header-left p {
-  font-size: 12px;
-  color: var(--text2);
-  margin-top: 4px;
-  font-family: 'DM Mono', monospace;
-}
-.tab-bar {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 24px;
-}
-.tab {
-  padding: 7px 16px;
-  border-radius: 999px;
-  border: 1px solid var(--border2);
-  font-size: 13px;
-  cursor: pointer;
-  background: var(--surface);
-  color: var(--text2);
-  font-family: 'Noto Sans KR', sans-serif;
-  transition: all 0.15s;
-  font-weight: 400;
-}
-.tab:hover { background: var(--surface2); color: var(--text); }
-.tab.active {
-  background: var(--text);
-  color: #fff;
-  border-color: var(--text);
-  font-weight: 500;
-}
-.metric-row {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 20px;
-}
-.metric-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px 18px;
-}
-.metric-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; letter-spacing: 0.3px; font-family: 'DM Mono', monospace; }
-.metric-value { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
-.metric-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
-.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px 18px;
-}
-.card-title { font-size: 11px; color: var(--text3); margin-bottom: 12px; letter-spacing: 0.3px; font-family: 'DM Mono', monospace; }
-.bar-wrap { display: flex; flex-direction: column; gap: 8px; }
-.bar-row { display: flex; align-items: center; gap: 10px; }
-.bar-label { width: 72px; font-size: 11px; color: var(--text2); text-align: right; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.bar-track { flex: 1; height: 10px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
-.bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
-.bar-val { width: 40px; font-size: 11px; font-weight: 500; font-family: 'DM Mono', monospace; }
-.full-card { margin-bottom: 16px; }
-.tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
-.tbl th { text-align: left; color: var(--text3); font-weight: 400; padding: 6px 8px; border-bottom: 1px solid var(--border); font-family: 'DM Mono', monospace; font-size: 11px; }
-.tbl td { padding: 7px 8px; border-bottom: 1px solid var(--border); }
-.tbl tr:last-child td { border-bottom: none; }
-.badge { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 999px; font-weight: 500; }
-.b-good { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
-.b-mid  { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
-.b-bad  { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
-.b-info { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-border); }
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  :root {
+    --black:#0d0d0d; --white:#fff;
+    --g50:#f5f5f3; --g100:#ececea; --g200:#ddddd8; --g400:#999990; --g600:#555550;
+    --radius:16px;
+  }
+  body { font-family:'Noto Sans KR','Pretendard',sans-serif; background:var(--white); color:var(--black); min-height:100vh; -webkit-font-smoothing:antialiased; }
 
-.issue-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; }
-.issue-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 12px;
-  display: flex; flex-direction: column; gap: 6px;
-}
-.issue-store { font-size: 12px; font-weight: 700; color: var(--text); padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-.issue-item { display: flex; flex-direction: column; gap: 2px; }
-.issue-tag { font-size: 10px; padding: 1px 6px; border-radius: 3px; display: inline-block; margin-bottom: 1px; font-weight: 500; width: fit-content; }
-.t-urgent { background: var(--red-bg); color: var(--red); }
-.t-warn { background: var(--amber-bg); color: var(--amber); }
-.t-info { background: var(--blue-bg); color: var(--blue); }
-.issue-cat { font-size: 11px; font-weight: 500; color: var(--text); }
-.issue-desc { font-size: 10px; color: var(--text2); line-height: 1.4; }
+  /* NAV — 좌우 여백 넉넉하게, 하단 라인 더 섬세하게 */
+  nav { position:fixed;top:0;left:0;right:0;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 48px;background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--g200);z-index:100; }
+  .nav-logo img { height:32px;display:block; }
+  .nav-admin-btn { padding:8px 20px;border-radius:999px;border:1px solid #ccc;background:transparent;color:var(--black);font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:400;cursor:pointer;letter-spacing:.2px;transition:background .15s,color .15s,border-color .15s; }
+  .nav-admin-btn:hover { background:var(--black);color:var(--white);border-color:var(--black); }
 
-.matrix-grid {
-  display: grid;
-  grid-template-columns: 36px 1fr 1fr;
-  grid-template-rows: auto auto auto;
-  gap: 8px;
-}
-.m-label { font-size: 11px; color: var(--text3); text-align: center; padding: 4px; font-family: 'DM Mono', monospace; }
-.m-axis { display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; transform: rotate(180deg); font-size: 10px; color: var(--text3); font-family: 'DM Mono', monospace; }
-.m-cell { border-radius: var(--radius-sm); padding: 12px; display: flex; flex-direction: column; gap: 5px; }
-.m-cell-title { font-size: 10px; font-weight: 700; margin-bottom: 4px; }
-.mc-pill { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 3px; display: inline-block; width: fit-content; margin-top: 1px; }
-.mc-red { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
-.mc-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
-.mc-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
-.mc-gray { background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
+  /* HERO — 수직 중심 리듬, 자간 세밀하게 */
+  .hero { padding-top:160px;padding-bottom:36px;text-align:center; }
+  .hero-title { font-family:'DM Sans','Noto Sans KR',sans-serif;font-size:clamp(36px,5vw,58px);font-weight:300;line-height:1.1;letter-spacing:-1.5px;color:#0d0d0d;margin-bottom:16px;opacity:0;transform:translateY(20px);animation:fadeUp .6s cubic-bezier(.22,1,.36,1) forwards .06s; }
+  .hero-sub { font-size:13.5px;color:var(--g400);font-weight:300;letter-spacing:.4px;line-height:1.6;opacity:0;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) forwards .18s; }
 
-.section-divider {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 24px 0 16px;
-}
-.section-divider-label { font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; }
-.section-divider-line { flex: 1; height: 1px; background: var(--border2); }
+  /* GRID — 카드 비율 황금비 느낌으로, 테두리 정교하게 */
+  .grid-wrap { max-width:680px;margin:28px auto 0;padding:0 28px 120px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;opacity:0;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) forwards .3s; }
+  .card { position:relative;background:var(--g50);border-radius:var(--radius);aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--g100);padding:20px;gap:6px;transition:border-color .2s,transform .22s,box-shadow .22s; }
+  .card:hover { border-color:var(--g200);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.07); }
+  .card.featured { background:var(--g50);color:var(--black);border-color:var(--g100); }
+  .card.featured:hover { border-color:var(--g200);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.07); }
+  .card-label { font-size:24px;font-weight:700;letter-spacing:-.6px;line-height:1.2;margin-bottom:5px; }
+  .card-desc { font-size:12px;color:var(--g400);font-weight:300;letter-spacing:.1px;line-height:1.5; }
+  .card.featured .card-desc { color:var(--g400); }
+  .card-badge { position:absolute;top:16px;right:16px;background:var(--black);color:var(--white);font-size:9px;font-weight:600;padding:3px 8px;border-radius:999px;letter-spacing:.6px; }
 
-.plan-block { margin-bottom: 14px; }
-.plan-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  border-radius: var(--radius) var(--radius) 0 0;
-  border: 1px solid var(--border);
-  border-bottom: none;
-}
-.ph-red { background: var(--red-bg); }
-.ph-amber { background: var(--amber-bg); }
-.ph-blue { background: var(--blue-bg); }
-.plan-header-badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
-.phb-red { background: var(--red); color: #fff; }
-.phb-amber { background: var(--amber); color: #fff; }
-.phb-blue { background: var(--blue); color: #fff; }
-.plan-header-title { font-size: 13px; font-weight: 700; color: var(--text); }
-.plan-header-sub { font-size: 11px; color: var(--text2); margin-top: 1px; }
-.plan-table-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 0 0 var(--radius) var(--radius);
-  overflow: hidden;
-}
-.plan-tbl { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
-.plan-tbl th { background: var(--surface2); text-align: left; color: var(--text3); font-weight: 400; padding: 7px 10px; border-bottom: 1px solid var(--border); font-family: 'DM Mono', monospace; font-size: 10px; }
-.plan-tbl td { padding: 10px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
-.plan-tbl tr:last-child td { border-bottom: none; }
-.plan-tbl tr:hover td { background: var(--surface2); }
-.plan-rank { font-size: 13px; font-weight: 700; color: var(--text3); font-family: 'DM Mono', monospace; }
-.plan-store-pill { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; display: inline-block; }
-.plan-issue-main { font-size: 12px; font-weight: 500; color: var(--text); }
-.plan-issue-sub { font-size: 11px; color: var(--text2); margin-top: 2px; line-height: 1.4; }
-.plan-action-cell { background: var(--surface2); border-radius: var(--radius-sm); padding: 7px 9px; font-size: 11px; color: var(--text); line-height: 1.5; }
-.plan-when { font-size: 11px; color: var(--text2); text-align: right; font-family: 'DM Mono', monospace; white-space: nowrap; }
-.plan-when.urgent { color: var(--red); font-weight: 500; }
-.plan-when.soon { color: var(--amber); font-weight: 500; }
+  /* 서브메뉴 */
+  .sub-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,.28);backdrop-filter:blur(8px);z-index:200;align-items:center;justify-content:center; }
+  .sub-overlay.open { display:flex;animation:fadeIn .2s ease; }
+  .sub-box { background:var(--white);border-radius:22px;padding:32px;width:min(440px,92vw);border:1px solid var(--g200);box-shadow:0 32px 80px rgba(0,0,0,.12);max-height:80vh;overflow-y:auto; }
+  .sub-header { display:flex;align-items:center;justify-content:space-between;margin-bottom:24px; }
+  .sub-title { font-size:17px;font-weight:600;letter-spacing:-.4px; }
+  .sub-close { width:28px;height:28px;border-radius:50%;border:1px solid var(--g200);background:transparent;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--g400);transition:background .12s,color .12s; }
+  .sub-close:hover { background:var(--g100);color:var(--black); }
+  .sub-list { display:flex;flex-direction:column;gap:6px; }
+  .sub-item { display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-radius:12px;background:var(--g50);border:1px solid transparent;cursor:pointer;transition:background .15s,border-color .15s; }
+  .sub-item:hover { background:var(--g100);border-color:var(--g200); }
+  .si-left { display:flex;flex-direction:column;gap:3px; }
+  .si-name { font-size:14px;font-weight:600;letter-spacing:-.3px; }
+  .si-desc { font-size:11px;color:var(--g400);font-weight:300; }
+  .si-arrow { font-size:12px;color:var(--g400); }
+  .sub-divider { height:1px;background:var(--g100);margin:6px 0; }
+  .sub-group-label { font-size:10px;font-weight:500;color:var(--g400);letter-spacing:.7px;text-transform:uppercase;padding:10px 4px 6px; }
 
-.action-section { margin-bottom: 14px; }
-.action-section-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-.action-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.dot-green { background: var(--green); }
-.dot-red { background: var(--red); }
-.dot-amber { background: var(--amber); }
-.action-item { display: flex; gap: 10px; align-items: flex-start; padding: 9px 0; border-bottom: 1px solid var(--border); }
-.action-item:last-child { border-bottom: none; }
-.action-text { font-size: 12px; color: var(--text); line-height: 1.5; }
-.action-tag { font-size: 10px; color: var(--text3); margin-top: 2px; font-family: 'DM Mono', monospace; }
+  /* 관리자 모달 */
+  .adm-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,.25);backdrop-filter:blur(10px);z-index:500;align-items:center;justify-content:center; }
+  .adm-overlay.open { display:flex;animation:fadeIn .2s ease; }
+  .adm-box { background:var(--white);border-radius:22px;padding:32px;width:min(520px,94vw);border:1px solid var(--g200);box-shadow:0 16px 60px rgba(0,0,0,.1);max-height:88vh;overflow-y:auto; }
+  .adm-head { display:flex;align-items:center;justify-content:space-between;margin-bottom:24px; }
+  .adm-title { font-size:16px;font-weight:600;letter-spacing:-.3px; }
+  .adm-close { width:28px;height:28px;border-radius:50%;border:1px solid var(--g200);background:transparent;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--g400);transition:background .12s; }
+  .adm-close:hover { background:var(--g100);color:var(--black); }
 
-.diag-item { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); }
-.diag-item:last-child { border-bottom: none; }
-.diag-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  .adm-section { margin-bottom:24px; }
+  .adm-section-title { font-size:10px;font-weight:500;color:var(--g400);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px; }
+  .adm-item-row { display:flex;align-items:center;gap:8px;margin-bottom:8px;background:var(--g50);border-radius:10px;padding:10px 12px;border:1px solid var(--g100); }
+  .adm-item-col { display:flex;flex-direction:column;gap:5px;flex:1; }
+  .adm-inp { padding:7px 10px;border-radius:7px;border:1px solid var(--g200);background:var(--white);font-size:12px;font-family:inherit;outline:none;width:100%;transition:border-color .12s; }
+  .adm-inp:focus { border-color:var(--black); }
+  .adm-inp-name { font-weight:600; }
+  .adm-del-btn { width:26px;height:26px;border-radius:50%;border:1px solid var(--g200);background:transparent;color:var(--g400);font-size:13px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .12s; }
+  .adm-del-btn:hover { background:#fef2f2;color:#dc2626;border-color:#fecaca; }
+  .adm-add-btn { width:100%;padding:9px;border-radius:9px;border:1px dashed var(--g200);background:transparent;color:var(--g400);font-size:12px;font-weight:400;cursor:pointer;font-family:inherit;transition:border-color .13s,color .13s; }
+  .adm-add-btn:hover { border-color:var(--black);color:var(--black); }
 
-@media (max-width: 700px) {
-  .issue-grid { grid-template-columns: repeat(2, 1fr); }
-  .row2 { grid-template-columns: 1fr; }
-  .metric-row { grid-template-columns: 1fr 1fr; }
-  .plan-tbl th:nth-child(4), .plan-tbl td:nth-child(4) { display: none; }
-  .matrix-grid { grid-template-columns: 28px 1fr 1fr; }
-}
+  .adm-actions { display:flex;gap:8px;margin-top:20px; }
+  .adm-btn { flex:1;padding:11px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:background .13s,opacity .13s; }
+  .adm-btn-cancel { border:1px solid var(--g200);background:var(--white);color:var(--g600); }
+  .adm-btn-cancel:hover { background:var(--g50); }
+  .adm-btn-save { border:none;background:var(--black);color:var(--white); }
+  .adm-btn-save:hover { opacity:.85; }
+
+  /* 로그인 */
+  .pw-inp { width:100%;padding:11px 16px;border-radius:10px;border:1px solid var(--g200);background:var(--g50);font-size:14px;font-family:inherit;outline:none;letter-spacing:2px;margin-bottom:10px;transition:border-color .12s; }
+  .pw-inp:focus { border-color:var(--black);background:var(--white); }
+  .pw-err { color:#dc2626;font-size:12px;min-height:18px;margin-bottom:10px; }
+
+  /* 토스트 */
+  .toast { position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--black);color:var(--white);padding:10px 22px;border-radius:999px;font-size:12px;font-weight:400;letter-spacing:.1px;opacity:0;pointer-events:none;transition:all .25s cubic-bezier(.22,1,.36,1);z-index:999;white-space:nowrap; }
+  .toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
+
+  @keyframes fadeUp { to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 </style>
 </head>
 <body>
-<div class="page">
-  <div class="header">
-    <div class="header-left">
-      <h1>킴스클럽 간편식 성과 관리</h1>
-      <p>KIMSCLUB · CONVENIENCE FOOD · CATEGORY PERFORMANCE DASHBOARD</p>
-    </div>
-  </div>
 
-  <div class="tab-bar" id="tabs">
-    <button class="tab active" onclick="show('전체')">전체</button>
-    <button class="tab" onclick="show('강서점')">강서점</button>
-    <button class="tab" onclick="show('불광점')">불광점</button>
-    <button class="tab" onclick="show('송파점')">송파점</button>
-    <button class="tab" onclick="show('분당점')">분당점</button>
-    <button class="tab" onclick="show('구의이스트폴')">구의이스트폴</button>
-  </div>
+<nav>
+  <div class="nav-logo"><img id="logoImg" alt="KIM'S CLUB"></div>
+  <button class="nav-admin-btn" onclick="openAdminModal()">관리자 모드</button>
+</nav>
 
-  <div id="content"></div>
+<div class="hero">
+  <h1 class="hero-title">Kim's Club<br>Hub</h1>
+  <p class="hero-sub">킴스클럽 통합 업무 포털입니다.</p>
 </div>
 
+<div class="grid-wrap" id="mainGrid">
+  <!-- JS로 렌더링 -->
+</div>
+
+<!-- 서브메뉴 오버레이 -->
+<div class="sub-overlay" id="subOverlay" onclick="closeSub(event)">
+  <div class="sub-box">
+    <div class="sub-header">
+      <div class="sub-title" id="subTitle"></div>
+      <button class="sub-close" onclick="closeSubBtn()">✕</button>
+    </div>
+    <div class="sub-list" id="subList"></div>
+  </div>
+</div>
+
+<!-- 관리자 모달 -->
+<div class="adm-overlay" id="admOverlay" onclick="closeAdmOutside(event)" onmousedown="event.stopPropagation()">
+  <div class="adm-box" onmousedown="event.stopPropagation()" onclick="event.stopPropagation()">
+
+    <!-- 로그인 -->
+    <div id="admLogin">
+      <div class="adm-head">
+        <div class="adm-title">관리자 모드</div>
+        <button class="adm-close" onclick="closeAdminModal()">✕</button>
+      </div>
+      <div style="font-size:13px;color:var(--g400);font-weight:300;margin-bottom:20px;">비밀번호를 입력하세요</div>
+      <input id="admPwInp" class="pw-inp" type="password" placeholder="비밀번호" onkeydown="if(event.key==='Enter')tryAdminLogin()"/>
+      <div id="admPwErr" class="pw-err"></div>
+      <div style="display:flex;gap:8px;">
+        <button class="adm-btn adm-btn-cancel" onclick="closeAdminModal()">취소</button>
+        <button class="adm-btn adm-btn-save" onclick="tryAdminLogin()">로그인</button>
+      </div>
+    </div>
+
+    <!-- 편집기 -->
+    <div id="admEditor" style="display:none;">
+      <div class="adm-head">
+        <div class="adm-title">메뉴 관리</div>
+        <button class="adm-close" onclick="closeAdminModal()">✕</button>
+      </div>
+      <div id="admSections"></div>
+      <div class="adm-actions">
+        <button class="adm-btn adm-btn-cancel" onclick="closeAdminModal()">닫기</button>
+        <button class="adm-btn adm-btn-save" onclick="saveAll()">저장</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-const storeColors = { 강서점:'#185FA5', 불광점:'#0F6E56', 송파점:'#993C1D', 분당점:'#854F0B', 구의이스트폴:'#993556' };
-const storeBg    = { 강서점:'#E6F1FB', 불광점:'#E1F5EE', 송파점:'#FAECE7', 분당점:'#FAEEDA', 구의이스트폴:'#FBEAF0' };
-const storeList  = ['강서점','불광점','송파점','분당점','구의이스트폴'];
+const ADMIN_PW = 'vmd12!';
+const LOGO_B64 = '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';
 
-const data = {
-  전체: { 매출:2045, 매출비중:null, 매총율:26.7,
-    categories:[
-      {cat:'즉석밥',매출:242,비중:11.8,매총율:28.3},{cat:'가공육(계육)',매출:147,비중:7.2,매총율:32.3},
-      {cat:'즉석국',매출:270,비중:13.2,매총율:29.3},{cat:'유제품류',매출:175,비중:8.6,매총율:21.4},
-      {cat:'유탕류',매출:112,비중:5.5,매총율:30.1},{cat:'만두류',매출:87,비중:4.3,매총율:25.2},
-      {cat:'가공육(계외)',매출:353,비중:17.2,매총율:23.3},{cat:'가공밀키트',매출:142,비중:6.9,매총율:26.6},
-      {cat:'냉장밀키트',매출:30,비중:1.5,매총율:19.7},{cat:'피자류',매출:51,비중:2.5,매총율:26.6},
-    ]
-  },
-  강서점: { 매출:203, 매출비중:28.2, 매총율:28.2,
-    categories:[
-      {cat:'즉석밥',매출:18,비중:8.9,매총율:34.5},{cat:'가공육(계육)',매출:13,비중:6.7,매총율:49.9},
-      {cat:'즉석국',매출:34,비중:16.6,매총율:31.1},{cat:'유제품류',매출:13,비중:6.4,매총율:21.5},
-      {cat:'유탕류',매출:8,비중:4.1,매총율:30.7},{cat:'만두류',매출:8,비중:3.7,매총율:33.1},
-      {cat:'가공육(계외)',매출:42,비중:20.8,매총율:19.2},{cat:'가공밀키트',매출:17,비중:8.5,매총율:28.4},
-      {cat:'냉장밀키트',매출:5,비중:2.7,매총율:16.9},{cat:'피자류',매출:3,비중:1.5,매총율:38.6},
-    ],
-    actions:{
-      강화:[{text:'즉석국 시식행사 정기 운영 — 비중 1위, 추가 구매 전환율 확대 가능',tag:'즉석국 16.6%'},{text:'가공육(계육) 매총율 49.9% → 프리미엄 라인 전면 배치로 단가 방어',tag:'49.9% 매총율'}],
-      개선:[{text:'냉장밀키트 매총율 16.9% — 저마진 SKU 정리 또는 PB 대체 검토',tag:'매총율 최저'},{text:'가공육(계외) 비중 20.8% / 매총율 19.2% — 구성 재검토',tag:'고비중 저마진'}],
-      모니터링:[{text:'유제품류 비중 6.4% / 매총율 21.5% — 경쟁사 가격 연동 여부 확인',tag:'월 1회'}]
-    }
-  },
-  불광점: { 매출:155, 매출비중:27.3, 매총율:27.3,
-    categories:[
-      {cat:'즉석밥',매출:17,비중:10.9,매총율:27.6},{cat:'가공육(계육)',매출:12,비중:7.5,매총율:32.5},
-      {cat:'즉석국',매출:26,비중:16.9,매총율:28.4},{cat:'유제품류',매출:15,비중:10.0,매총율:22.2},
-      {cat:'유탕류',매출:12,비중:7.5,매총율:32.0},{cat:'만두류',매출:9,비중:5.9,매총율:26.8},
-      {cat:'가공육(계외)',매출:21,비중:13.3,매총율:25.4},{cat:'가공밀키트',매출:9,비중:6.0,매총율:24.9},
-      {cat:'냉장밀키트',매출:0,비중:0,매총율:0},{cat:'피자류',매출:3,비중:1.6,매총율:27.5},
-    ],
-    actions:{
-      강화:[{text:'즉석국 16.9% — 계절 한정 신메뉴 우선 배치 점포로 활용',tag:'즉석국 비중 1위'},{text:'유탕류·가공육(계육) 32% 이상 — 묶음 구성으로 객단가 확대',tag:'고마진 카테고리'}],
-      개선:[{text:'냉장밀키트 매출 0 — 입점 여부 즉시 확인 및 대체 카테고리 검토',tag:'데이터 공백'},{text:'가공밀키트 비중 6.0% — 레시피 카드 연계 MD 진열 시도',tag:'비중 하위'}],
-      모니터링:[{text:'유제품류 비중 10.0% — 타 채널 가격 연동 점검',tag:'분기 1회'}]
-    }
-  },
-  송파점: { 매출:154, 매출비중:26.9, 매총율:26.9,
-    categories:[
-      {cat:'즉석밥',매출:19,비중:12.5,매총율:28.2},{cat:'가공육(계육)',매출:9,비중:5.6,매총율:31.8},
-      {cat:'즉석국',매출:19,비중:12.2,매총율:29.7},{cat:'유제품류',매출:13,비중:8.6,매총율:21.8},
-      {cat:'유탕류',매출:7,비중:4.8,매총율:30.1},{cat:'만두류',매출:3,비중:2.1,매총율:27.0},
-      {cat:'가공육(계외)',매출:32,비중:20.5,매총율:25.9},{cat:'가공밀키트',매출:10,비중:6.5,매총율:24.9},
-      {cat:'냉장밀키트',매출:8,비중:5.0,매총율:24.6},{cat:'피자류',매출:6,비중:3.9,매총율:25.7},
-    ],
-    actions:{
-      강화:[{text:'가공육(계외) 20.5% — 주요 브랜드 독점 행사 유치 검토',tag:'비중 1위'},{text:'냉장밀키트 5.0% — 성공 케이스, 타 점포 확산 가능',tag:'벤치마크'}],
-      개선:[{text:'만두류 2.1% — 냉동 진열 면적 및 SKU 즉시 재검토',tag:'비중 최저'},{text:'유제품류 21.8% — PB 비율 확대로 마진 방어',tag:'마진 취약'}],
-      모니터링:[{text:'즉석밥·즉석국 균등 비중 — 시즌 묶음 행사로 교차 구매 유도',tag:'기회'}]
-    }
-  },
-  분당점: { 매출:104, 매출비중:26.2, 매총율:26.2,
-    categories:[
-      {cat:'즉석밥',매출:9,비중:9.1,매총율:27.3},{cat:'가공육(계육)',매출:8,비중:7.8,매총율:30.6},
-      {cat:'즉석국',매출:19,비중:18.1,매총율:27.6},{cat:'유제품류',매출:9,비중:8.7,매총율:21.8},
-      {cat:'유탕류',매출:3,비중:3.3,매총율:32.0},{cat:'만두류',매출:2,비중:2.4,매총율:30.2},
-      {cat:'가공육(계외)',매출:20,비중:19.0,매총율:24.4},{cat:'가공밀키트',매출:7,비중:6.7,매총율:28.3},
-      {cat:'냉장밀키트',매출:3,비중:2.8,매총율:19.1},{cat:'피자류',매출:3,비중:2.6,매총율:25.3},
-    ],
-    actions:{
-      강화:[{text:'즉석국 18.1% — 5점포 최고, 프리미엄 국물 라인 테스트 점포 활용',tag:'즉석국 1위'},{text:'유탕류 32% / 가공육(계외) — 주말 기획전 고마진 묶음',tag:'마진 균형'}],
-      개선:[{text:'냉장밀키트 19.1% / 2.8% — 이중 취약, 운영 중단 또는 SKU 교체',tag:'우선 개선'},{text:'만두류 2.4% — 주요 브랜드 재입점 또는 PB 만두 시범 운영',tag:'매출 공백'}],
-      모니터링:[{text:'소점포 특성상 SKU 수 최적화로 생산성 관리',tag:'효율화'}]
-    }
-  },
-  구의이스트폴: { 매출:76, 매출비중:25.3, 매총율:25.3,
-    categories:[
-      {cat:'즉석밥',매출:10,비중:13.6,매총율:28.4},{cat:'가공육(계육)',매출:3,비중:3.9,매총율:33.8},
-      {cat:'즉석국',매출:9,비중:11.7,매총율:31.4},{cat:'유제품류',매출:3,비중:3.9,매총율:23.9},
-      {cat:'유탕류',매출:4,비중:5.8,매총율:34.0},{cat:'만두류',매출:3,비중:3.9,매총율:26.1},
-      {cat:'가공육(계외)',매출:21,비중:27.3,매총율:14.6},{cat:'가공밀키트',매출:8,비중:10.9,매총율:28.1},
-      {cat:'냉장밀키트',매출:0,비중:0,매총율:0},{cat:'피자류',매출:4,비중:5.4,매총율:28.2},
-    ],
-    actions:{
-      강화:[{text:'즉석밥 13.6% + 28.4% — 균형 카테고리, 프로모션 연계 확대',tag:'안정적 주력'},{text:'유탕류 34.0% / 가공육(계육) 33.8% — 면적 확대 및 추천 진열',tag:'마진 최상위'}],
-      개선:[{text:'가공육(계외) 27.3% / 14.6% — 전 점포 최대 구조 문제, 긴급 SKU 재편',tag:'즉시 개입'},{text:'냉장밀키트 0 — 입점 가능성 타진 또는 대체 운영',tag:'공백'}],
-      모니터링:[{text:'가공육(계외) 개선 시 전체 매총율 2~3%p 개선 기대',tag:'레버리지'}]
-    }
-  }
-};
-
-const storeIssues = {
-  강서점:{ urgent:[{cat:'가공육(계외)',desc:'비중 1위(20.8%) / 매총율 19.2% — 고비중 저마진'},{cat:'냉장밀키트',desc:'매총율 16.9% — 전체 최저'}], warn:[{cat:'가공육(계육)',desc:'49.9% — 데이터 이상 여부 확인'},{cat:'유제품류',desc:'21.5% — 가격 경쟁 노출'}], info:[{cat:'즉석국',desc:'16.6% 강세 — 시식행사 추가 전환 가능'}] },
-  불광점:{ urgent:[{cat:'냉장밀키트',desc:'매출 0 — 미입점 또는 재고 공백'}], warn:[{cat:'가공밀키트',desc:'6.0% — 타 점포 대비 낮음'},{cat:'유제품류',desc:'22.2% — 가격경쟁 모니터링'}], info:[{cat:'유탕류·가공육(계육)',desc:'32% 이상 — 묶음 행사 기회'}] },
-  송파점:{ urgent:[{cat:'만두류',desc:'비중 2.1% — 핵심 카테고리 최저'}], warn:[{cat:'유제품류',desc:'21.8% — PB 확대 필요'},{cat:'가공육(계외)',desc:'20.5% / 25.9% — 마진 개선 여지'}], info:[{cat:'냉장밀키트',desc:'5.0% — 벤치마크, 타 점포 확산 가능'}] },
-  분당점:{ urgent:[{cat:'냉장밀키트',desc:'19.1% + 2.8% — 이중 취약'},{cat:'만두류',desc:'2.4% — 브랜드 재입점 필요'}], warn:[{cat:'유제품류',desc:'21.8% — 마진 취약'},{cat:'가공육(계외)',desc:'19.0% / 24.4% — 최적화 필요'}], info:[{cat:'즉석국',desc:'18.1% — 프리미엄 테스트 적합'}] },
-  구의이스트폴:{ urgent:[{cat:'가공육(계외)',desc:'27.3% / 14.6% — 전 점포 최대 구조 문제'},{cat:'냉장밀키트',desc:'0 — 2개 점포 공통 이슈'}], warn:[{cat:'유제품류',desc:'23.9% — PB 전환 검토'}], info:[{cat:'유탕류·가공육(계육)',desc:'34%+ — 면적 확대 우선'}] }
-};
-
-const actionPlan = {
-  urgent:[
-    {rank:1,store:'구의이스트폴',issue:'가공육(계외) 역마진 구조',sub:'비중 27.3% / 매총율 14.6% — 점포 전체 매총율 끌어내리는 핵심 원인',action:'SKU별 원가 점검 → 저마진 품목 즉시 교체 또는 축소',when:'이번 주'},
-    {rank:2,store:'강서점',issue:'가공육(계외) 고비중 저마진',sub:'비중 20.8% / 매총율 19.2% — 구의와 동일 패턴',action:'가공육(계육) 49.9% 데이터 확인 후 계육 라인 전면 배치 검토',when:'이번 주'},
-    {rank:3,store:'불광점',issue:'냉장밀키트 매출 0',sub:'구의이스트폴과 공통 이슈 — 2개 점포 동시 발생',action:'미입점/재고공백/MD제외 원인 파악 → 입점 또는 대체 카테고리 결정',when:'이번 주'},
-    {rank:4,store:'구의이스트폴',issue:'냉장밀키트 매출 0',sub:'불광점과 동일 구조, 공통 대응 가능',action:'불광점과 묶어 동일 액션, 공간 확보 시 즉시 입점',when:'이번 주'},
-  ],
-  improve:[
-    {rank:5,store:'분당점',issue:'냉장밀키트 이중 취약',sub:'매총율 19.1% + 비중 2.8% — 둘 다 하위',action:'운영 중단 또는 PB 교체 결정, 확보 공간에 유탕류 확대',when:'2주 내'},
-    {rank:6,store:'송파점',issue:'만두류 비중 최저',sub:'간편식 핵심 카테고리 2.1% — 5개 점포 최저',action:'냉동 진열 면적 및 SKU 수 재점검, 주요 브랜드 위치 확인',when:'2주 내'},
-    {rank:7,store:'분당점',issue:'만두류 공백',sub:'비중 2.4% — 주요 브랜드 누락 가능성',action:'주요 브랜드 재입점 협의 또는 PB 만두 시범 운영',when:'2주 내'},
-  ],
-  monitor:[
-    {rank:8,store:'전 점포',issue:'유제품류 저마진',sub:'21~22% 대 — 가격 경쟁 노출 의심',action:'경쟁사 동일 품목 가격 모니터링, PB 비율 확대 검토',when:'월 1회'},
-    {rank:9,store:'강서점',issue:'가공육(계육) 49.9% 이상값',sub:'정상 범위 초과 — 데이터 오류 가능성',action:'실제 매총율 원천 데이터 재확인',when:'즉시 확인'},
+// 기본 데이터
+const DEFAULT_DATA = {
+  menus: [
+    {
+      id: 'product', label: '상품', desc: '상품 관리', featured: false,
+      items: []
+    },
+    {
+      id: 'sales', label: '영업', desc: '표준화 · 도면', featured: true,
+      items: [
+        { id: 's1', name: '52주 AI 표준화', desc: '도면 · 평당매출 · 운영맵', url: 'index_header_v2_v5_fixed.html' },
+        { id: 's2', name: '매출 분석', desc: '지점별 매출 현황 및 리포트', url: '' },
+        { id: 's3', name: '발주 관리', desc: '주간 발주 계획 및 현황', url: '' },
+      ]
+    },
+    {
+      id: 'marketing', label: '광고·알리기', desc: '광고 · 홍보', featured: false,
+      items: []
+    },
   ]
 };
 
-function rateColor(v) {
-  if (v >= 30) return '#2d6a1f';
-  if (v >= 25) return '#1a4f8a';
-  if (v >= 20) return '#a0610a';
-  return '#c0392b';
+function loadData() {
+  try {
+    const s = localStorage.getItem('kc_data');
+    return s ? JSON.parse(s) : DEFAULT_DATA;
+  } catch(e) { return DEFAULT_DATA; }
 }
-function rateLabel(v) {
-  if (v >= 30) return ['b-good','우수'];
-  if (v >= 25) return ['b-mid','양호'];
-  return ['b-bad','요주의'];
-}
-function storePill(s, small) {
-  const fs = small ? '10px' : '11px';
-  return `<span class="plan-store-pill" style="background:${storeBg[s]||'#f0efe9'};color:${storeColors[s]||'#1a1917'};font-size:${fs}">${s}</span>`;
+function saveData(data) {
+  localStorage.setItem('kc_data', JSON.stringify(data));
 }
 
-function barRows(items, maxKey, valKey, colorFn, fixedColor) {
-  const max = Math.max(...items.map(i => i[maxKey]));
-  return items.map(i => {
-    if (i[valKey] === 0) return `<div class="bar-row"><div class="bar-label">${i.cat||i.name||i.store}</div><div class="bar-track"></div><div class="bar-val" style="color:#9b9a94;font-size:10px">-</div></div>`;
-    const pct = (i[valKey] / max * 100).toFixed(1);
-    const col = fixedColor || (colorFn ? colorFn(i[valKey]) : '#1a1917');
-    return `<div class="bar-row"><div class="bar-label">${i.cat||i.name||i.store||i.s}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${col}"></div></div><div class="bar-val" style="color:${col}">${i[valKey]}${valKey==='매총율'?'%':''}</div></div>`;
-  }).join('');
-}
-
-function mkPlanRows(items) {
-  return items.map(r => {
-    const isAll = r.store === '전 점포';
-    const pill = isAll
-      ? `<span style="font-size:11px;font-weight:700;color:#6b6a65">전 점포</span>`
-      : storePill(r.store);
-    const wClass = r.when.includes('주') ? 'urgent' : r.when.includes('내') ? 'soon' : '';
-    return `<tr>
-      <td style="width:36px"><span class="plan-rank">${r.rank}</span></td>
-      <td style="width:110px">${pill}</td>
-      <td><div class="plan-issue-main">${r.issue}</div><div class="plan-issue-sub">${r.sub}</div></td>
-      <td style="width:200px"><div class="plan-action-cell">${r.action}</div></td>
-      <td style="width:80px"><div class="plan-when ${wClass}">${r.when}</div></td>
-    </tr>`;
-  }).join('');
-}
-
-function renderActionPlan() {
-  const hdr = `<tr><th style="width:36px">#</th><th style="width:110px">점포</th><th>이슈 / 원인</th><th style="width:200px">액션</th><th style="width:80px;text-align:right">시한</th></tr>`;
-  return `
-    <div class="plan-block">
-      <div class="plan-header ph-red"><span class="plan-header-badge phb-red">긴급</span><div><div class="plan-header-title">즉시 처리 — 이번 주 내</div><div class="plan-header-sub">구조적 문제로 방치 시 매총율 직접 영향</div></div></div>
-      <div class="plan-table-wrap"><table class="plan-tbl"><thead>${hdr}</thead><tbody>${mkPlanRows(actionPlan.urgent)}</tbody></table></div>
+// ── 메인 그리드 렌더 ──
+function renderGrid() {
+  const data = loadData();
+  const grid = document.getElementById('mainGrid');
+  grid.innerHTML = data.menus.map(m => `
+    <div class="card${m.featured?' featured':''}" onclick="handleCardClick('${m.id}')">
+      
+      <div class="card-label">${m.label}</div>
+      <div class="card-desc">${m.desc}</div>
     </div>
-    <div class="plan-block">
-      <div class="plan-header ph-amber"><span class="plan-header-badge phb-amber">개선</span><div><div class="plan-header-title">2주 내 조치 — MD 재편 필요</div><div class="plan-header-sub">카테고리 공백 및 저효율 구조 개선</div></div></div>
-      <div class="plan-table-wrap"><table class="plan-tbl"><thead>${hdr}</thead><tbody>${mkPlanRows(actionPlan.improve)}</tbody></table></div>
-    </div>
-    <div class="plan-block">
-      <div class="plan-header ph-blue"><span class="plan-header-badge phb-blue">모니터링</span><div><div class="plan-header-title">정기 점검 — 월 1회 이상</div><div class="plan-header-sub">경쟁 연동 및 데이터 이상값 추적</div></div></div>
-      <div class="plan-table-wrap"><table class="plan-tbl"><thead>${hdr}</thead><tbody>${mkPlanRows(actionPlan.monitor)}</tbody></table></div>
-    </div>`;
+  `).join('');
 }
 
-function renderMatrix() {
-  return `<div class="matrix-grid">
-    <div></div>
-    <div class="m-label">비중 높음 (영향 큼)</div>
-    <div class="m-label">비중 낮음 (영향 작음)</div>
-    <div class="m-axis" style="grid-row:2">매총율 높음</div>
-    <div class="m-cell" style="background:var(--green-bg);border:1px solid var(--green-border)">
-      <div class="m-cell-title" style="color:var(--green)">고비중 + 고마진 — 유지·강화</div>
-      <span class="mc-pill mc-green">강서: 즉석국 16.6% / 31.1%</span>
-      <span class="mc-pill mc-green">불광: 즉석국 16.9% / 28.4%</span>
-      <span class="mc-pill mc-green">분당: 즉석국 18.1% / 27.6%</span>
-    </div>
-    <div class="m-cell" style="background:var(--amber-bg);border:1px solid var(--amber-border)">
-      <div class="m-cell-title" style="color:var(--amber)">저비중 + 고마진 — 육성 가능</div>
-      <span class="mc-pill mc-amber">강서: 가공육(계육) 6.7% / 49.9%</span>
-      <span class="mc-pill mc-amber">구의: 유탕류 5.8% / 34.0%</span>
-    </div>
-    <div class="m-axis" style="grid-row:3">매총율 낮음</div>
-    <div class="m-cell" style="background:var(--red-bg);border:1px solid var(--red-border)">
-      <div class="m-cell-title" style="color:var(--red)">고비중 + 저마진 — 최우선 해결</div>
-      <span class="mc-pill mc-red">구의: 가공육(계외) 27.3% / 14.6%</span>
-      <span class="mc-pill mc-red">강서: 가공육(계외) 20.8% / 19.2%</span>
-      <span class="mc-pill mc-red">강서: 냉장밀키트 / 16.9%</span>
-    </div>
-    <div class="m-cell" style="background:#f5f4f0;border:1px solid var(--border2)">
-      <div class="m-cell-title" style="color:#6b6a65">저비중 + 저마진 — 정리 또는 교체</div>
-      <span class="mc-pill mc-gray">분당: 냉장밀키트 2.8% / 19.1%</span>
-      <span class="mc-pill mc-gray">불광·구의: 냉장밀키트 0%</span>
-      <span class="mc-pill mc-gray">송파: 만두류 2.1%</span>
-    </div>
-  </div>`;
-}
-
-function show(store) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.textContent === store));
-  const d = data[store];
-  const isAll = store === '전체';
-  const el = document.getElementById('content');
-
-  if (isAll) {
-    const rows = storeList.map(s => {
-      const sd = data[s];
-      const [cls, lbl] = rateLabel(sd.매총율);
-      return `<tr>
-        <td style="font-weight:700">${s}</td>
-        <td style="text-align:right;font-family:'DM Mono',monospace">${sd.매출}</td>
-        <td style="text-align:right;font-family:'DM Mono',monospace">${sd.매출비중}%</td>
-        <td style="text-align:right;font-family:'DM Mono',monospace;color:${rateColor(sd.매총율)};font-weight:700">${sd.매총율}%</td>
-        <td style="text-align:center"><span class="badge ${cls}">${lbl}</span></td>
-      </tr>`;
-    }).join('');
-
-    const topCats = [...d.categories].sort((a,b) => b.매출 - a.매출).slice(0,5);
-    const catColors = ['#185FA5','#0F6E56','#993C1D','#854F0B','#993556'];
-
-    const issueCards = storeList.map(s => {
-      const iss = storeIssues[s];
-      const bc = iss.urgent.length >= 2 ? '#f5c6c2' : iss.urgent.length === 1 ? '#f9d89a' : '#b8dda0';
-      const items = [
-        ...iss.urgent.map(i => `<div class="issue-item"><span class="issue-tag t-urgent">긴급</span><div class="issue-cat">${i.cat}</div><div class="issue-desc">${i.desc}</div></div>`),
-        ...iss.warn.map(i => `<div class="issue-item"><span class="issue-tag t-warn">개선</span><div class="issue-cat">${i.cat}</div><div class="issue-desc">${i.desc}</div></div>`),
-      ].slice(0,3).join('');
-      return `<div class="issue-card" style="border-color:${bc}"><div class="issue-store">${s}</div>${items}</div>`;
-    }).join('');
-
-    el.innerHTML = `
-      <div class="metric-row">
-        <div class="metric-card"><div class="metric-label">TOTAL SALES</div><div class="metric-value">${d.매출.toLocaleString()}</div><div class="metric-sub">단위: 백만원</div></div>
-        <div class="metric-card"><div class="metric-label">GROSS MARGIN</div><div class="metric-value" style="color:${rateColor(d.매총율)}">${d.매총율}%</div><div class="metric-sub">전체 매총율</div></div>
-        <div class="metric-card"><div class="metric-label">STORES</div><div class="metric-value">5</div><div class="metric-sub">강서·불광·송파·분당·구의</div></div>
-      </div>
-      <div class="row2">
-        <div class="card"><div class="card-title">GROSS MARGIN BY STORE</div><div class="bar-wrap">${storeList.map(s=>{const sd=data[s];const pct=(sd.매총율/40*100).toFixed(1);return`<div class="bar-row"><div class="bar-label">${s.replace('이스트폴','')}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${storeColors[s]}"></div></div><div class="bar-val" style="color:${rateColor(sd.매총율)}">${sd.매총율}%</div></div>`;}).join('')}</div></div>
-        <div class="card"><div class="card-title">SALES TOP 5 CATEGORY</div><div class="bar-wrap">${topCats.map((c,i)=>{const pct=(c.매출/topCats[0].매출*100).toFixed(1);return`<div class="bar-row"><div class="bar-label">${c.cat}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${catColors[i]}"></div></div><div class="bar-val">${c.매출}</div></div>`;}).join('')}</div></div>
-      </div>
-      <div class="card full-card">
-        <div class="card-title">STORE PERFORMANCE SUMMARY</div>
-        <table class="tbl"><thead><tr><th>점포</th><th style="text-align:right">매출</th><th style="text-align:right">비중</th><th style="text-align:right">매총율</th><th style="text-align:center">판정</th></tr></thead><tbody>${rows}</tbody></table>
-      </div>
-      <div class="card full-card">
-        <div class="card-title">STORE ISSUE CARDS — 테두리: 빨강 긴급 2건 이상 / 주황 1건 / 초록 양호</div>
-        <div class="issue-grid">${issueCards}</div>
-      </div>
-      <div class="card full-card">
-        <div class="card-title">PRIORITY MATRIX — 비중 × 매총율</div>
-        ${renderMatrix()}
-      </div>
-      <div class="section-divider"><div class="section-divider-label">점포별 우선순위 액션 플랜</div><div class="section-divider-line"></div></div>
-      ${renderActionPlan()}
-    `;
+function handleCardClick(id) {
+  const data = loadData();
+  const menu = data.menus.find(m => m.id === id);
+  if (!menu) return;
+  if (menu.items && menu.items.length > 0) {
+    openSub(menu);
+  } else if (menu.url) {
+    window.open(menu.url, '_blank');
   } else {
-    const cats = data[store].categories;
-    const sorted = [...cats].sort((a,b) => b.비중 - a.비중);
-    const act = data[store].actions;
-    const iss = storeIssues[store];
-
-    const catRows = sorted.map(c => {
-      if (c.매총율 === 0) return `<tr><td>${c.cat}</td><td colspan="3" style="text-align:center;color:#9b9a94;font-size:11px">미운영</td></tr>`;
-      const [cls,lbl] = rateLabel(c.매총율);
-      return `<tr><td>${c.cat}</td><td style="text-align:right;font-family:'DM Mono',monospace">${c.비중}%</td><td style="text-align:right;font-family:'DM Mono',monospace;color:${rateColor(c.매총율)};font-weight:700">${c.매총율}%</td><td style="text-align:center"><span class="badge ${cls}">${lbl}</span></td></tr>`;
-    }).join('');
-
-    const mkActionItems = (items, dotCls) => items.map(i => `
-      <div class="action-item">
-        <div class="action-dot ${dotCls}" style="margin-top:5px;flex-shrink:0"></div>
-        <div><div class="action-text">${i.text}</div><div class="action-tag">${i.tag}</div></div>
-      </div>`).join('');
-
-    const mkDiagItems = (items, dotColor, tagCls, tagLabel) => items.map(i => `
-      <div class="diag-item">
-        <div class="diag-dot" style="background:${dotColor}"></div>
-        <div>
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span class="issue-tag ${tagCls}">${tagLabel}</span><span style="font-size:12px;font-weight:700">${i.cat}</span></div>
-          <div style="font-size:12px;color:#1a1917;line-height:1.5">${i.desc}</div>
-        </div>
-      </div>`).join('');
-
-    const storePlanItems = [...actionPlan.urgent, ...actionPlan.improve, ...actionPlan.monitor].filter(r => r.store === store);
-    const hdr = `<tr><th style="width:36px">#</th><th style="width:110px">점포</th><th>이슈 / 원인</th><th style="width:200px">액션</th><th style="width:80px;text-align:right">시한</th></tr>`;
-
-    el.innerHTML = `
-      <div class="metric-row">
-        <div class="metric-card"><div class="metric-label">STORE SALES</div><div class="metric-value">${d.매출}</div><div class="metric-sub">단위: 백만원</div></div>
-        <div class="metric-card"><div class="metric-label">CHANNEL SHARE</div><div class="metric-value">${d.매출비중}%</div><div class="metric-sub">킴스클럽 내 비중</div></div>
-        <div class="metric-card"><div class="metric-label">GROSS MARGIN</div><div class="metric-value" style="color:${rateColor(d.매총율)}">${d.매총율}%</div><div class="metric-sub">${d.매총율>=28?'전체 평균 상회':'개선 필요'}</div></div>
-      </div>
-      <div class="row2">
-        <div class="card"><div class="card-title">CATEGORY SHARE</div><div class="bar-wrap">${sorted.filter(c=>c.비중>0).map(c=>{const pct=(c.비중/sorted.filter(x=>x.비중>0)[0].비중*100).toFixed(1);return`<div class="bar-row"><div class="bar-label">${c.cat}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${storeColors[store]}"></div></div><div class="bar-val">${c.비중}%</div></div>`;}).join('')}</div></div>
-        <div class="card"><div class="card-title">CATEGORY MARGIN</div><div class="bar-wrap">${sorted.filter(c=>c.매총율>0).map(c=>{const pct=(c.매총율/50*100).toFixed(1);return`<div class="bar-row"><div class="bar-label">${c.cat}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${rateColor(c.매총율)}"></div></div><div class="bar-val">${c.매총율}%</div></div>`;}).join('')}</div></div>
-      </div>
-      <div class="card full-card">
-        <div class="card-title">CATEGORY DETAIL</div>
-        <table class="tbl"><thead><tr><th>카테고리</th><th style="text-align:right">비중</th><th style="text-align:right">매총율</th><th style="text-align:center">판정</th></tr></thead><tbody>${catRows}</tbody></table>
-      </div>
-      <div class="card full-card">
-        <div class="card-title">ISSUE DIAGNOSIS — 빨강 긴급 · 주황 개선 · 파랑 기회</div>
-        ${mkDiagItems(iss.urgent,'#c0392b','t-urgent','긴급')}
-        ${mkDiagItems(iss.warn,'#a0610a','t-warn','개선')}
-        ${mkDiagItems(iss.info,'#1a4f8a','t-info','기회')}
-      </div>
-      ${storePlanItems.length > 0 ? `
-      <div class="plan-block">
-        <div class="plan-header ph-red"><span class="plan-header-badge phb-red">액션 플랜</span><div><div class="plan-header-title">${store} 우선 처리 과제</div><div class="plan-header-sub">전체 플랜에서 해당 점포 항목 추출</div></div></div>
-        <div class="plan-table-wrap"><table class="plan-tbl"><thead>${hdr}</thead><tbody>${mkPlanRows(storePlanItems)}</tbody></table></div>
-      </div>` : ''}
-      <div class="card full-card">
-        <div class="action-section"><div class="action-section-title"><div class="action-dot dot-green"></div>성과 강화 방향</div>${mkActionItems(act.강화,'dot-green')}</div>
-        <div class="action-section"><div class="action-section-title"><div class="action-dot dot-red"></div>개선 조치 필요</div>${mkActionItems(act.개선,'dot-red')}</div>
-        <div class="action-section" style="margin-bottom:0"><div class="action-section-title"><div class="action-dot dot-amber"></div>모니터링 항목</div>${mkActionItems(act.모니터링,'dot-amber')}</div>
-      </div>
-    `;
+    showToast('준비 중입니다');
   }
 }
 
-show('전체');
+// ── 서브메뉴 ──
+function openSub(menu) {
+  document.getElementById('subTitle').textContent = menu.label;
+  document.getElementById('subList').innerHTML = menu.items.map(item => `
+    <div class="sub-item" onclick="goUrl('${item.url}')">
+      <div class="si-left">
+        <div class="si-name">${item.name}</div>
+        <div class="si-desc">${item.desc}</div>
+      </div>
+      <div class="si-arrow">→</div>
+    </div>
+  `).join('<div class="sub-divider"></div>');
+  document.getElementById('subOverlay').classList.add('open');
+}
+function closeSubBtn() { document.getElementById('subOverlay').classList.remove('open'); }
+function closeSub(e) { if(e.target===document.getElementById('subOverlay')) closeSubBtn(); }
+function goUrl(url) {
+  if (url) window.open(url, '_blank');
+  else showToast('준비 중입니다');
+}
+
+// ── 관리자 모달 ──
+function openAdminModal() {
+  document.getElementById('admOverlay').classList.add('open');
+  document.getElementById('admLogin').style.display = 'block';
+  document.getElementById('admEditor').style.display = 'none';
+  document.getElementById('admPwInp').value = '';
+  document.getElementById('admPwErr').textContent = '';
+  setTimeout(() => document.getElementById('admPwInp').focus(), 100);
+}
+function closeAdminModal() { document.getElementById('admOverlay').classList.remove('open'); }
+function closeAdmOutside(e) { if(e.target===document.getElementById('admOverlay')) closeAdminModal(); }
+
+function tryAdminLogin() {
+  if (document.getElementById('admPwInp').value === ADMIN_PW) {
+    document.getElementById('admLogin').style.display = 'none';
+    document.getElementById('admEditor').style.display = 'block';
+    renderAdminEditor();
+  } else {
+    document.getElementById('admPwErr').textContent = '비밀번호가 올바르지 않습니다';
+    document.getElementById('admPwInp').value = '';
+    document.getElementById('admPwInp').focus();
+  }
+}
+
+// ── 관리자 편집기 렌더 ──
+function renderAdminEditor() {
+  const d = getEditData();
+  const wrap = document.getElementById('admSections');
+  wrap.innerHTML = d.menus.map((menu, mi) => `
+    <div class="adm-section">
+      <div class="adm-section-title">${menu.label} 카드</div>
+      <div class="adm-item-row" style="margin-bottom:14px;">
+        <div class="adm-item-col">
+          <input class="adm-inp adm-inp-name" placeholder="카드 이름" value="${menu.label}"
+            oninput="_editData.menus[${mi}].label=this.value"/>
+          <input class="adm-inp" placeholder="카드 설명" value="${menu.desc}"
+            oninput="_editData.menus[${mi}].desc=this.value"/>
+        </div>
+      </div>
+
+      ${(menu.groups||[]).map((grp, gi) => `
+        <div style="border:1px solid var(--g200);border-radius:10px;padding:12px;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <input class="adm-inp adm-inp-name" placeholder="그룹 이름" value="${grp.name}"
+              oninput="_editData.menus[${mi}].groups[${gi}].name=this.value" style="flex:1;"/>
+            <button class="adm-del-btn" style="background:#fef2f2;color:#dc2626;border-color:#fecaca;"
+              onmousedown="event.preventDefault();event.stopPropagation();deleteGroup(${mi},${gi})">✕</button>
+          </div>
+
+          ${(grp.items||[]).map((item, ii) => `
+            <div class="adm-item-row" style="background:var(--white);">
+              <div class="adm-item-col">
+                <input class="adm-inp adm-inp-name" placeholder="이름" value="${item.name}"
+                  oninput="_editData.menus[${mi}].groups[${gi}].items[${ii}].name=this.value"/>
+                <input class="adm-inp" placeholder="설명" value="${item.desc}"
+                  oninput="_editData.menus[${mi}].groups[${gi}].items[${ii}].desc=this.value"/>
+                <input class="adm-inp" placeholder="URL" value="${item.url}"
+                  oninput="_editData.menus[${mi}].groups[${gi}].items[${ii}].url=this.value"/>
+              </div>
+              <button class="adm-del-btn" onmousedown="event.preventDefault();event.stopPropagation();deleteGroupItem(${mi},${gi},${ii})">✕</button>
+            </div>
+          `).join('')}
+
+          <button class="adm-add-btn" onmousedown="event.preventDefault();event.stopPropagation();addGroupItem(${mi},${gi})">+ 링크 추가</button>
+        </div>
+      `).join('')}
+
+      <button class="adm-add-btn" style="margin-top:4px;" onmousedown="event.preventDefault();event.stopPropagation();addGroup(${mi})">+ 그룹 추가</button>
+    </div>
+    ${mi < d.menus.length-1 ? '<div class="sub-divider" style="margin:4px 0 20px;"></div>' : ''}
+  `).join('');
+}
+
+// 임시 편집 데이터 (저장 전)
+let _editData = null;
+
+  function deleteGroup(mi, gi) {
+    getEditData().menus[mi].groups.splice(gi, 1);
+    renderAdminEditor();
+  }
+  function addGroup(mi) {
+    const d = getEditData();
+    if (!d.menus[mi].groups) d.menus[mi].groups = [];
+    d.menus[mi].groups.push({ id: 'g'+Date.now(), name: '새 그룹', items: [] });
+    renderAdminEditor();
+  }
+  function deleteGroupItem(mi, gi, ii) {
+    getEditData().menus[mi].groups[gi].items.splice(ii, 1);
+    renderAdminEditor();
+  }
+  function addGroupItem(mi, gi) {
+    const d = getEditData();
+    d.menus[mi].groups[gi].items.push({ id: 'i'+Date.now(), name: '', desc: '', url: '' });
+    renderAdminEditor();
+  }
+
+function getEditData() {
+  if (!_editData) _editData = JSON.parse(JSON.stringify(loadData()));
+  return _editData;
+}
+
+function updateMenuField(mi, field, val) {
+  getEditData().menus[mi][field] = val;
+}
+function updateItemField(mi, ii, field, val) {
+  getEditData().menus[mi].items[ii][field] = val;
+}
+function deleteItem(mi, ii) {
+  getEditData().menus[mi].items.splice(ii, 1);
+  renderAdminEditor();
+}
+function addItem(mi) {
+  const d = getEditData();
+  d.menus[mi].items.push({ id: 'i'+Date.now(), name: '', desc: '', url: '' });
+  renderAdminEditor();
+}
+function saveAll() {
+  if (_editData) {
+    saveData(_editData);
+    _editData = null;
+  }
+  renderGrid();
+  closeAdminModal();
+  showToast('저장되었습니다');
+}
+
+// ── 토스트 ──
+let _tt;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_tt);
+  _tt = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ── 초기화 ──
+document.getElementById('logoImg').src = 'data:image/png;base64,' + LOGO_B64;
+renderGrid();
 </script>
 </body>
 </html>
