@@ -107,6 +107,50 @@
   @keyframes fadeUp { to{opacity:1;transform:translateY(0)} }
   @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 </style>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBz3tf1ZBf5HgolwNhJBQDeo5u0LqjgR9A",
+    authDomain: "kimshub.firebaseapp.com",
+    projectId: "kimshub",
+    storageBucket: "kimshub.firebasestorage.app",
+    messagingSenderId: "132043868188",
+    appId: "1:132043868188:web:5498b132a85153d70af7d9",
+    measurementId: "G-VB16XVGS7D"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Firestore에서 데이터 로드
+  window._fbLoadData = async function() {
+    try {
+      const snap = await getDoc(doc(db, 'hub', 'menus'));
+      if (snap.exists()) {
+        localStorage.setItem('kc_data', JSON.stringify(snap.data().data));
+      }
+    } catch(e) { console.warn('Firebase load failed:', e); }
+    if (typeof renderGrid === 'function') renderGrid();
+  };
+
+  // Firestore에 데이터 저장
+  window._fbSaveData = async function(data) {
+    try {
+      await setDoc(doc(db, 'hub', 'menus'), { data });
+      return true;
+    } catch(e) {
+      console.warn('Firebase save failed:', e);
+      return false;
+    }
+  };
+
+  // 페이지 로드 시 Firebase에서 불러오기
+  window.addEventListener('DOMContentLoaded', () => {
+    window._fbLoadData();
+  });
+</script>
 </head>
 <body>
 
