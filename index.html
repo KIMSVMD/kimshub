@@ -130,7 +130,10 @@
     try {
       const snap = await get(ref(db, 'hub/menus'));
       if (snap.exists()) {
-        localStorage.setItem('kc_data', JSON.stringify(snap.val()));
+        const val = snap.val();
+        // menus 배열이 있는 구조인지 확인
+        const data = (val && val.menus) ? val : { menus: val };
+        localStorage.setItem('kc_data', JSON.stringify(data));
       }
     } catch(e) { console.warn('Firebase load failed:', e); }
     if (typeof renderGrid === 'function') renderGrid();
@@ -139,7 +142,9 @@
   // Realtime Database에 데이터 저장
   window._fbSaveData = async function(data) {
     try {
-      await set(ref(db, 'hub/menus'), data);
+      // 항상 { menus: [...] } 구조로 저장
+      const payload = (data && data.menus) ? data : { menus: data };
+      await set(ref(db, 'hub/menus'), payload);
       return true;
     } catch(e) {
       console.warn('Firebase save failed:', e);
