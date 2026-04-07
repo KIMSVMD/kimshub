@@ -250,10 +250,28 @@ const DEFAULT_DATA = {
   ]
 };
 
+function fixArrays(obj) {
+  // Firebase RTDB는 배열을 {0:..., 1:...} 객체로 저장 — 배열로 복원
+  if (!obj || typeof obj !== 'object') return obj;
+  const keys = Object.keys(obj);
+  const isArr = keys.length > 0 && keys.every(k => /^\d+$/.test(k));
+  if (isArr) {
+    const arr = [];
+    keys.sort((a,b) => Number(a)-Number(b)).forEach(k => arr.push(fixArrays(obj[k])));
+    return arr;
+  }
+  const result = {};
+  keys.forEach(k => result[k] = fixArrays(obj[k]));
+  return result;
+}
 function loadData() {
   try {
     const s = localStorage.getItem('kc_data');
-    return s ? JSON.parse(s) : DEFAULT_DATA;
+    if (!s) return DEFAULT_DATA;
+    const parsed = JSON.parse(s);
+    const fixed = fixArrays(parsed);
+    if (!fixed || !fixed.menus || !Array.isArray(fixed.menus)) return DEFAULT_DATA;
+    return fixed;
   } catch(e) { return DEFAULT_DATA; }
 }
 function saveData(data) {
