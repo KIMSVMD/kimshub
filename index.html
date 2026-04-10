@@ -383,6 +383,12 @@ let _editData = null;
 
 function renderAdminEditor() {
   if (!_editData) return;
+  // groups/items 없으면 초기화
+  _editData.menus.forEach(m => {
+    if (!m.groups) m.groups = [];
+    if (!m.items) m.items = [];
+    m.groups.forEach(g => { if (!g.items) g.items = []; });
+  });
   const wrap = document.getElementById('admSections');
   wrap.innerHTML = _editData.menus.map((menu, mi) => `
     <div class="adm-section">
