@@ -231,23 +231,20 @@ const LOGO_B64 = '/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAA
 const DEFAULT_DATA = {
   menus: [
     {
-      id: 'product', label: '상품', desc: '산지 · 매출판', featured: false,
-      groups: [
-        { id: 'g1', name: '산지', items: [{ id: 'p1', name: '산지 현황', desc: '산지별 입고 및 현황', url: '' }] },
-        { id: 'g2', name: '매출판', items: [{ id: 'p2', name: '매출판', desc: '상품별 매출 현황', url: '' }] },
-      ], items: []
-    },
-    {
-      id: 'sales', label: '영업', desc: '표준화 · 도면', featured: false,
-      groups: [], items: [
-        { id: 's1', name: '52주 AI 표준화', desc: '도면 · 평당매출 · 운영맵', url: 'index_header_v2_v5_fixed.html' },
-        { id: 's2', name: '매출 분석', desc: '지점별 매출 현황 및 리포트', url: '' },
-        { id: 's3', name: '발주 관리', desc: '주간 발주 계획 및 현황', url: '' },
-      ]
-    },
-    {
-      id: 'marketing', label: '광고·알리기', desc: '광고 · 홍보', featured: false,
+      id: 'supply', label: '산지·물류', desc: '산지 · 물류 시스템', featured: false,
       groups: [], items: []
+    },
+    {
+      id: 'loss', label: '손실·품질', desc: '손실 · 품질 시스템', featured: false,
+      groups: [], items: []
+    },
+    {
+      id: 'sales', label: '영업', desc: 'VMD · 광고 · 알리기', featured: false,
+      groups: [], items: [
+        { id: 's1', name: 'VMD', desc: '52주 AI 표준화 · 도면 · 평당매출', url: 'index_header_v2_v5_fixed.html' },
+        { id: 's2', name: '광고', desc: '광고 신청 및 현황', url: '' },
+        { id: 's3', name: '알리기', desc: '홍보 · 마케팅', url: '' },
+      ]
     },
     {
       id: 'customer', label: '고객데이터', desc: '고객 분석 · 통계', featured: false,
