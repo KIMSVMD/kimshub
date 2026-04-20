@@ -39,8 +39,8 @@
   .hero-sub { font-size:14px;color:#b0afa8;font-weight:300;letter-spacing:.3px;line-height:1.6;opacity:0;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) forwards .18s; }
 
   /* GRID — 카드 비율 황금비 느낌으로, 테두리 정교하게 */
-  .grid-wrap { max-width:520px;margin:16px auto 0;padding:0 28px 120px;display:grid;grid-template-columns:repeat(2,1fr);gap:14px;opacity:0;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) forwards .3s; }
-  .card { position:relative;background:var(--g50);border-radius:20px;aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;border:1px solid var(--g100);padding:28px;gap:4px;transition:border-color .2s,transform .22s,box-shadow .22s; }
+  .grid-wrap { max-width:640px;margin:16px auto 0;padding:0 28px 120px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;opacity:0;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) forwards .3s; }
+  .card { position:relative;background:var(--g50);border-radius:20px;aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;border:1px solid var(--g100);padding:28px;gap:4px;transition:border-color .2s,transform .22s,box-shadow .22s;min-height:0; }
   .card:hover { border-color:var(--g200);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.07); }
   .card.featured { background:var(--g50);color:var(--black);border-color:var(--g100); }
   .card.featured:hover { border-color:var(--g200);transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,0,0,.07); }
@@ -132,9 +132,15 @@
       if (snap.exists() && snap.val() !== null) {
         const val = snap.val();
         const data = (val && val.menus) ? val : { menus: val };
-        localStorage.setItem('kc_data', JSON.stringify(data));
+        // 버전 체크 — Firebase 데이터도 구버전이면 무시
+        const CURRENT_VERSION = 'v5_5menus_20250422';
+        if (localStorage.getItem('kc_version') !== CURRENT_VERSION) {
+          localStorage.removeItem('kc_data');
+          localStorage.setItem('kc_version', CURRENT_VERSION);
+        } else {
+          localStorage.setItem('kc_data', JSON.stringify(data));
+        }
       } else {
-        // Firebase 비어있으면 localStorage도 지워서 기본값 사용
         localStorage.removeItem('kc_data');
       }
     } catch(e) { console.warn('Firebase load failed:', e); }
@@ -233,24 +239,49 @@ const LOGO_B64 = '/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAA
 const DEFAULT_DATA = {
   menus: [
     {
-      id: 'supply', label: '산지·물류', desc: '', featured: false,
-      groups: [], items: []
+      id: 'planning', label: '상품기획', desc: '52주 상품맵 · 트랜드 · 분석', featured: false,
+      groups: [], items: [
+        { id: 'p1', name: '52주 상품맵', desc: '시즌별 상품 기획', url: '' },
+        { id: 'p2', name: '식재료 트랜드 분석', desc: 'AI 트랜드 분석', url: '' },
+        { id: 'p3', name: 'AI 수익 분석', desc: '수익 현황 및 분석', url: '' },
+        { id: 'p4', name: 'AI 인사이트', desc: '인사이트 뱅크 에이전트', url: '' },
+      ]
     },
     {
-      id: 'loss', label: '손실·품질', desc: '', featured: false,
-      groups: [], items: []
+      id: 'supply', label: '산지·발주', desc: '산지 지도 · 수요예측 · 자동발주', featured: false,
+      groups: [], items: [
+        { id: 's1', name: '산지 지도 AI', desc: '신선 산지 현황', url: '' },
+        { id: 's2', name: '신상품 크롤링', desc: '공산·간편식 신상품', url: '' },
+        { id: 's3', name: '수요예측 AI', desc: '수요 예측 및 분석', url: '' },
+        { id: 's4', name: '자동발주 AI', desc: '자동 발주 시스템', url: '' },
+      ]
+    },
+    {
+      id: 'logistics', label: '물류·품질', desc: '물류 자동화 · 품질 · 손실', featured: false,
+      groups: [], items: [
+        { id: 'l1', name: '물류 자동화 AI', desc: '물류 현황 및 자동화', url: '' },
+        { id: 'l2', name: '물류 품질', desc: '물류 단계 품질 관리', url: '' },
+        { id: 'l3', name: '매장 품질', desc: '매장 진열·보관 품질', url: '' },
+        { id: 'l4', name: '손실 현황', desc: '손실 분석 및 관리', url: '' },
+      ]
     },
     {
       id: 'sales', label: '영업', desc: 'VMD · 광고 · 알리기', featured: false,
       groups: [], items: [
-        { id: 's1', name: 'VMD', desc: '52주 AI 표준화 · 도면 · 평당매출', url: 'index_header_v2_v5_fixed.html' },
-        { id: 's2', name: '광고', desc: '광고 신청 및 현황', url: '' },
-        { id: 's3', name: '알리기', desc: '홍보 · 마케팅', url: '' },
+        { id: 'sa1', name: 'VMD', desc: '52주 상품판 AI · 도면 · 매장점검', url: 'index_header_v2_v5_fixed.html' },
+        { id: 'sa2', name: '광고 신청 AI', desc: '광고 신청 및 현황', url: '' },
+        { id: 'sa3', name: 'AI 초개인화 알리기', desc: '개인화 홍보·마케팅', url: '' },
+        { id: 'sa4', name: '매장 POP AI', desc: '매장 POP 제작', url: '' },
       ]
     },
     {
-      id: 'customer', label: '고객데이터', desc: '고객 분석 · 통계', featured: false,
-      groups: [], items: []
+      id: 'sell', label: '판매', desc: '최적 판매가 · 고객심리 · 전략', featured: false,
+      groups: [], items: [
+        { id: 'se1', name: '최적 판매가 AI', desc: '판매가 최적화', url: '' },
+        { id: 'se2', name: '고객심리가 AI', desc: '고객 심리 분석', url: '' },
+        { id: 'se3', name: '판매전략 AI', desc: '판매 전략 수립', url: '' },
+        { id: 'se4', name: '매출 분석', desc: '지점별 매출 현황', url: '' },
+      ]
     },
   ]
 };
@@ -297,6 +328,23 @@ function renderGrid() {
       <div class="card-desc">${m.desc}</div>
     </div>
   `).join('');
+  if (data.menus.length === 5) {
+    grid.style.gridTemplateColumns = 'repeat(6,1fr)';
+    const items = grid.children;
+    items[0].style.gridColumn = 'span 2';
+    items[1].style.gridColumn = 'span 2';
+    items[2].style.gridColumn = 'span 2';
+    items[3].style.gridColumn = 'span 3';
+    items[4].style.gridColumn = 'span 3';
+    // 높이를 첫번째 카드와 동일하게
+    const h = items[0].offsetHeight;
+    if (h > 0) {
+      items[3].style.aspectRatio = 'unset';
+      items[3].style.height = h + 'px';
+      items[4].style.aspectRatio = 'unset';
+      items[4].style.height = h + 'px';
+    }
+  }
 }
 
 function handleCardClick(id) {
@@ -398,7 +446,7 @@ function renderAdminEditor() {
           <input class="adm-inp" placeholder="카드 설명" value="${menu.desc}" oninput="_editData.menus[${mi}].desc=this.value"/>
         </div>
       </div>
-      ${menu.groups.length === 0 ? `
+      ${(!menu.groups || !Array.isArray(menu.groups) || menu.groups.length === 0) ? `
         <div style="font-size:10px;color:var(--g400);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;">링크 목록</div>
         ${menu.items.map((item, ii) => `
           <div class="adm-item-row">
@@ -462,6 +510,14 @@ function showToast(msg) {
 
 // ── 초기화 ──
 document.getElementById('logoImg').src = 'data:image/png;base64,' + LOGO_B64;
+
+// 버전 체크 — 메뉴 구조 바뀌면 자동 초기화
+const CURRENT_VERSION = 'v5_5menus_20250422';
+if (localStorage.getItem('kc_version') !== CURRENT_VERSION) {
+  localStorage.removeItem('kc_data');
+  localStorage.setItem('kc_version', CURRENT_VERSION);
+}
+
 if (typeof window._fbLoadData !== 'function') renderGrid();
 </script>
 </body>
