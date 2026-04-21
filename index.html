@@ -429,11 +429,12 @@ let _editData = null;
 
 function renderAdminEditor() {
   if (!_editData) return;
-  // groups/items 없으면 초기화
+  // Firebase에서 불러온 객체를 배열로 변환 + 없으면 초기화
+  _editData = fixArrays(_editData);
   _editData.menus.forEach(m => {
-    if (!m.groups) m.groups = [];
-    if (!m.items) m.items = [];
-    m.groups.forEach(g => { if (!g.items) g.items = []; });
+    if (!m.groups || !Array.isArray(m.groups)) m.groups = [];
+    if (!m.items || !Array.isArray(m.items)) m.items = [];
+    m.groups.forEach(g => { if (!g.items || !Array.isArray(g.items)) g.items = []; });
   });
   const wrap = document.getElementById('admSections');
   wrap.innerHTML = _editData.menus.map((menu, mi) => `
